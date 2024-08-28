@@ -92,7 +92,7 @@
             const SS = pad(date.getSeconds());
             const SSms = date.getMilliseconds().toString().padStart(3, '0').slice(0, 2); // Get first 2 digits of milliseconds
 
-            return `${mm}-${dd}-${yyyy} ${HH}:${MM}:${SS}.${SSms}`;
+            return `${dd}-${mm}-${yyyy} ${HH}:${MM}:${SS}.${SSms}`;
         }
 
         function generateJson() {
