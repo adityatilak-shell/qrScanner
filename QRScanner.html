@@ -24,6 +24,9 @@
     </div>
 
     <script>
+        let scanTime1 = null;
+        let scanTime2 = null;
+
         const html5QrCode1 = new Html5Qrcode("reader1");
         const html5QrCode2 = new Html5Qrcode("reader2");
 
@@ -39,6 +42,7 @@
                 },
                 function(decodedText, decodedResult) {
                     document.getElementById("qrCode1").value = decodedText;
+                    scanTime1 = new Date().toISOString(); // Capture scan time for QR Code 1
                     html5QrCode1.stop();
                     reader1.style.display = "none";
                 },
@@ -62,6 +66,7 @@
                 },
                 function(decodedText, decodedResult) {
                     document.getElementById("qrCode2").value = decodedText;
+                    scanTime2 = new Date().toISOString(); // Capture scan time for QR Code 2
                     html5QrCode2.stop();
                     reader2.style.display = "none";
                 },
@@ -85,9 +90,6 @@
                 alert("Please scan both QR codes.");
                 return;
             }
-
-            const scanTime1 = new Date().toISOString();
-            const scanTime2 = new Date().toISOString();
 
             const jsonData = {
                 "Product1_ID": productID1,
