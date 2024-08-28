@@ -42,7 +42,7 @@
                 },
                 function(decodedText, decodedResult) {
                     document.getElementById("qrCode1").value = decodedText;
-                    scanTime1 = new Date().toISOString(); // Capture scan time for QR Code 1
+                    scanTime1 = new Date(); // Capture scan time for QR Code 1
                     html5QrCode1.stop();
                     reader1.style.display = "none";
                 },
@@ -66,7 +66,7 @@
                 },
                 function(decodedText, decodedResult) {
                     document.getElementById("qrCode2").value = decodedText;
-                    scanTime2 = new Date().toISOString(); // Capture scan time for QR Code 2
+                    scanTime2 = new Date(); // Capture scan time for QR Code 2
                     html5QrCode2.stop();
                     reader2.style.display = "none";
                 },
@@ -82,6 +82,19 @@
             generateJson();
         });
 
+        function formatDate(date) {
+            const pad = (num) => num.toString().padStart(2, '0');
+            const mm = pad(date.getMonth() + 1);
+            const dd = pad(date.getDate());
+            const yyyy = date.getFullYear();
+            const HH = pad(date.getHours());
+            const MM = pad(date.getMinutes());
+            const SS = pad(date.getSeconds());
+            const SSms = date.getMilliseconds().toString().padStart(3, '0').slice(0, 2); // Get first 2 digits of milliseconds
+
+            return `${mm}-${dd}-${yyyy} ${HH}:${MM}:${SS}.${SSms}`;
+        }
+
         function generateJson() {
             const productID1 = document.getElementById("qrCode1").value;
             const productID2 = document.getElementById("qrCode2").value;
@@ -93,9 +106,9 @@
 
             const jsonData = {
                 "Product1_ID": productID1,
-                "Product1_ScanTime": scanTime1,
+                "Product1_ScanTime": formatDate(scanTime1),
                 "Product2_ID": productID2,
-                "Product2_ScanTime": scanTime2
+                "Product2_ScanTime": formatDate(scanTime2)
             };
 
             document.getElementById("jsonOutput").textContent = JSON.stringify(jsonData, null, 2);
