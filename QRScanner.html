@@ -9,66 +9,34 @@
 <body>
     <div>
         <h2>QR Code Scanner</h2>
-        <input type="text" id="qrCode1" placeholder="Scan QR Code 1" readonly>
+        <input type="text" id="sampleLabel" placeholder="Scan Sample Label" readonly>
         <br><br>
-        <div id="reader1" style="width:300px; display:none;"></div>
-        <button id="scanButton1">Scan QR Code 1</button>
-        <br><br>
-        <input type="text" id="qrCode2" placeholder="Scan QR Code 2" readonly>
-        <br><br>
-        <div id="reader2" style="width:300px; display:none;"></div>
-        <button id="scanButton2">Scan QR Code 2</button>
+        <div id="reader" style="width:300px; display:none;"></div>
+        <button id="scanSampleLabelButton">Scan Sample Label</button>
         <br><br>
         <button id="generateJsonButton">Generate JSON</button>
         <pre id="jsonOutput"></pre>
     </div>
 
     <script>
-        let scanTime1 = null;
-        let scanTime2 = null;
+        let scanTime = null;
+        const html5QrCode = new Html5Qrcode("reader");
 
-        const html5QrCode1 = new Html5Qrcode("reader1");
-        const html5QrCode2 = new Html5Qrcode("reader2");
+        document.getElementById("scanSampleLabelButton").addEventListener("click", function() {
+            const reader = document.getElementById("reader");
+            reader.style.display = "block";
 
-        document.getElementById("scanButton1").addEventListener("click", function() {
-            const reader1 = document.getElementById("reader1");
-            reader1.style.display = "block";
-
-            html5QrCode1.start(
+            html5QrCode.start(
                 { facingMode: "environment" },
                 {
                     fps: 10,    // Scans per second
                     qrbox: { width: 250, height: 250 }
                 },
                 function(decodedText, decodedResult) {
-                    document.getElementById("qrCode1").value = decodedText;
-                    scanTime1 = new Date(); // Capture scan time for QR Code 1
-                    html5QrCode1.stop();
-                    reader1.style.display = "none";
-                },
-                function(errorMessage) {
-                    console.warn(`QR Code scanning failed. Error: ${errorMessage}`);
-                }
-            ).catch(function(error) {
-                console.error(`Unable to start scanning. Error: ${error}`);
-            });
-        });
-
-        document.getElementById("scanButton2").addEventListener("click", function() {
-            const reader2 = document.getElementById("reader2");
-            reader2.style.display = "block";
-
-            html5QrCode2.start(
-                { facingMode: "environment" },
-                {
-                    fps: 10,
-                    qrbox: { width: 250, height: 250 }
-                },
-                function(decodedText, decodedResult) {
-                    document.getElementById("qrCode2").value = decodedText;
-                    scanTime2 = new Date(); // Capture scan time for QR Code 2
-                    html5QrCode2.stop();
-                    reader2.style.display = "none";
+                    document.getElementById("sampleLabel").value = decodedText;
+                    scanTime = new Date(); // Capture scan time for Sample Label
+                    html5QrCode.stop();
+                    reader.style.display = "none";
                 },
                 function(errorMessage) {
                     console.warn(`QR Code scanning failed. Error: ${errorMessage}`);
@@ -82,7 +50,7 @@
             generateJson();
         });
 
-       function formatDate(date) {
+        function formatDate(date) {
             const pad = (num) => num.toString().padStart(2, '0');
             const monthNames = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
             const dd = pad(date.getDate());
@@ -97,19 +65,16 @@
         }
 
         function generateJson() {
-            const productID1 = document.getElementById("qrCode1").value;
-            const productID2 = document.getElementById("qrCode2").value;
+            const sampleLabel = document.getElementById("sampleLabel").value;
 
-            if (!productID1 || !productID2) {
-                alert("Please scan both QR codes.");
+            if (!sampleLabel) {
+                alert("Please scan the Sample Label.");
                 return;
             }
 
             const jsonData = {
-                "Product1_ID": productID1,
-                "Product1_ScanTime": formatDate(scanTime1),
-                "Product2_ID": productID2,
-                "Product2_ScanTime": formatDate(scanTime2)
+                "SampleLabel_ID": sampleLabel,
+                "SampleLabel_ScanTime": formatDate(scanTime)
             };
 
             document.getElementById("jsonOutput").textContent = JSON.stringify(jsonData, null, 2);
